@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2026-08-16T21:29:34 IST" name="Default suite" finished-at="2026-08-16T21:31:12 IST" duration-ms="97673">
+    <groups>
+    </groups>
+    <test started-at="2026-08-16T21:29:34 IST" name="Default test" finished-at="2026-08-16T21:31:12 IST" duration-ms="97673">
+      <class name="Tests.PayrunUiloadTest">
+        <test-method is-config="true" signature="setupTest()[pri:0, instance:Tests.PayrunUiloadTest@4c12331b]" started-at="2026-08-16T21:29:35 IST" name="setupTest" finished-at="2026-08-16T21:29:43 IST" duration-ms="8602" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setupTest -->
+        <test-method signature="payrunTest(java.lang.String,java.lang.String)[pri:0, instance:Tests.PayrunUiloadTest@4c12331b]" started-at="2026-08-16T21:29:43 IST" name="payrunTest" data-provider="loginData" finished-at="2026-08-16T21:31:12 IST" duration-ms="88190" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[San123]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[San123]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- payrunTest -->
+        <test-method is-config="true" signature="closeBrowser()[pri:0, instance:Tests.PayrunUiloadTest@4c12331b]" started-at="2026-08-16T21:31:12 IST" name="closeBrowser" finished-at="2026-08-16T21:31:12 IST" duration-ms="1" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- closeBrowser -->
+      </class> <!-- Tests.PayrunUiloadTest -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
