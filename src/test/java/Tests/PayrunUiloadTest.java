@@ -30,7 +30,7 @@ public class PayrunUiloadTest extends BaseTest {
     @BeforeMethod
     public void setupTest() {
 
-        setup();
+        setup();  // SSERTT
     }
 
     @Test(dataProvider = "loginData",
