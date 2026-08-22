@@ -30,7 +30,7 @@ public class PayrunUiloadTest extends BaseTest {
     @BeforeMethod
     public void setupTest() {
 
-        setup();  // SSERTT
+        setup();  
     }
 
     @Test(dataProvider = "loginData",
@@ -43,13 +43,20 @@ public class PayrunUiloadTest extends BaseTest {
         // Now Payrun test starts
         System.out.println("Login completed");
 
-        // Payrun code here
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("//a[@class='Id_1 Id__12 nav-link d-md-block']")).click();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        
+        // Payrun code here    
+      //  driver.findElement(By.xpath("//a[@class='Id_1 Id__12 nav-link d-md-block']")).click();
+       // driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+        Thread.sleep(2000);
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='Id_1 Id__12 nav-link d-md-block']"))).click();
+       
     
-     // division dropdown     
-        driver.findElement(By.xpath("//button[@class='btn dropdown-toggle btn-light']")).click();
+     // division dropdown 
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[@class='btn dropdown-toggle btn-light']")
+        )).click();
+        
         List<WebElement> droplist = driver.findElements(By.xpath("(//ul[ @class='dropdown-menu inner show'])[1]//li"));
         
         for (WebElement webElement : droplist) {
@@ -66,7 +73,7 @@ public class PayrunUiloadTest extends BaseTest {
         	}
     
         	}
-        Thread.sleep(5000);
+        Thread.sleep(2000);
 
         
         // Month dropdown
@@ -74,7 +81,7 @@ public class PayrunUiloadTest extends BaseTest {
 
         driver.findElement(By.xpath("//button[@class='btn dropdown-toggle bs-placeholder btn-light']")).click();
         
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+       
 
        /* List<WebElement> monthList = wait.until(
                 ExpectedConditions.visibilityOfAllElementsLocatedBy(
@@ -85,7 +92,9 @@ public class PayrunUiloadTest extends BaseTest {
        driver.findElement(By.xpath("(//input[@class='form-control'])[2]")).sendKeys("August-2026");
        driver.findElement(By.xpath("//a[contains(@id,'bs-select-4')]")).click();
        
-       driver.findElement(By.xpath("//button[text()='INITIATE PAYRUN']")).click();
+      // driver.findElement(By.xpath("//button[text()='INITIATE PAYRUN']")).click();
+       
+       wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='INITIATE PAYRUN']"))).click();
        
        // 1st page
        
@@ -138,7 +147,7 @@ public class PayrunUiloadTest extends BaseTest {
             
             
             //2nd page
-            
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
             String secondndpagetext = driver.findElement(By.xpath("(//li[@class='atten active fs-14  fw-5'])[2]")).getText().trim();
             
             if (secondndpagetext.equals("Addition & Deduction")) {
@@ -179,18 +188,18 @@ public class PayrunUiloadTest extends BaseTest {
 
             			confirmButton.click();
 
-            			// Wait for SweetAlert popup to disappear
-            			wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".swal2-container")));
-
-           			// Wait for application loader to disappear
-            			wait.until(ExpectedConditions.invisibilityOfElementLocated( By.id("globalLoader")));
             			// Find View Summary
-            			WebElement viewSummary = wait.until( ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[normalize-space()='View Summary']")));
+            			WebElement viewSummary = wait.until(
+            			        ExpectedConditions.visibilityOfElementLocated(
+            			                By.xpath("//a[normalize-space()='View Summary']")
+            			        )
+            			);
 
             			// Scroll directly to View Summary
             			actions.scrollToElement(viewSummary).perform();
+
             			// Wait until View Summary is clickable
-            			wait.until( ExpectedConditions.elementToBeClickable(viewSummary)).click();
+            			wait.until(ExpectedConditions.elementToBeClickable(viewSummary)).click();
             		
             			// 4th  page
             			
@@ -322,7 +331,7 @@ public class PayrunUiloadTest extends BaseTest {
 
     @AfterMethod
     public void closeBrowser() {
-    	//closebrowser();
+    	closebrowser();
     }
 }
 
