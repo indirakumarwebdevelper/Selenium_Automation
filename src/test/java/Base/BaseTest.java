@@ -1,13 +1,21 @@
 package Base;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;   //test
+import java.util.logging.FileHandler;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
+
+import com.google.common.io.Files;
 
 import Page.LoginPage;
 
@@ -101,6 +109,26 @@ public class BaseTest {
 
     public void closebrowser() {
         driver.quit();
+    }
+    
+    
+    
+    // screenshot method
+    
+    public void takeScreenshot(String fileName) throws IOException {
+
+        TakesScreenshot screenshot = (TakesScreenshot) driver;
+
+        File source = screenshot.getScreenshotAs(OutputType.FILE);
+
+        File destination = new File(
+            "C:\\Users\\indira kumar p\\selenium_pom\\SeleniumAutomation\\src\\test\\resources\\Screenshots\\"
+            + fileName + ".png"
+        );
+
+       org.openqa.selenium.io.FileHandler.copy(source, destination);
+
+        System.out.println("Screenshot saved: " + destination.getAbsolutePath());
     }
 }
 

@@ -48,7 +48,7 @@ public class LoginData {
 	
 	
 
-@DataProvider(name = "loginData")
+/*@DataProvider(name = "loginData")
 public Object[][] loginData() throws IOException {
 
     String filePath = "src/test/resources/Logincredentails.xlsx";
@@ -86,7 +86,58 @@ public Object[][] loginData() throws IOException {
     file.close();
 
     return loginData.toArray(new Object[0][0]);
-}
+}*/
+	
+	
+	
+	@DataProvider(name = "loginData")
+	public Object[][] loginData() throws IOException {
+
+	    String filePath = "src/test/resources/Logincredentails.xlsx";
+
+	    FileInputStream file = new FileInputStream(filePath);
+
+	    XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+	    XSSFSheet sheet = workbook.getSheet("Credentials");
+
+	    DataFormatter formatter = new DataFormatter();
+
+	    List<Object[]> loginData = new ArrayList<>();
+
+	    for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+
+	        Row row = sheet.getRow(i);
+
+	        // Skip completely empty row
+	        if (row == null) {
+	            continue;
+	        }
+
+	        String username = formatter.formatCellValue(row.getCell(0)).trim();
+	        String password = formatter.formatCellValue(row.getCell(1)).trim();
+	        String divisionName = formatter.formatCellValue(row.getCell(2)).trim();
+	        String month = formatter.formatCellValue(row.getCell(3)).trim();
+
+	        // Skip row if any required value is empty
+	        if (username.isEmpty() || password.isEmpty() ||
+	                divisionName.isEmpty() || month.isEmpty()) {
+	            continue;
+	        }
+
+	        loginData.add(new Object[] {
+	                username,
+	                password,
+	                divisionName,
+	                month
+	        });
+	    }
+
+	    workbook.close();
+	    file.close();
+
+	    return loginData.toArray(new Object[0][0]);
+	}
 
 }
 

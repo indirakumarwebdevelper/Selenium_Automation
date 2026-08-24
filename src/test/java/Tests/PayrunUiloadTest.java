@@ -3,6 +3,7 @@ package Tests;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.jspecify.annotations.NonNull;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -21,13 +23,14 @@ import org.testng.annotations.Test;
 
 import Base.BaseTest;
 import Page.LoginPage;
+import Page.PayrunLoadPage;
 import TestData.LoginData;
 
 
 
-public class PayrunUiloadTest extends BaseTest {
+/*public class PayrunUiloadTest extends BaseTest {
 
-    @BeforeMethod
+   @BeforeMethod
     public void setupTest() {
 
         setup();  
@@ -35,7 +38,7 @@ public class PayrunUiloadTest extends BaseTest {
 
     @Test(dataProvider = "loginData",
           dataProviderClass = LoginData.class)
-    public void payrunTest(String username, String password) throws InterruptedException, AWTException {
+    public void payrunTest(String username, String password, String divisionName, String month)throws InterruptedException, AWTException, IOException {
 
         // Login using common login method
         login(username, password);
@@ -65,11 +68,14 @@ public class PayrunUiloadTest extends BaseTest {
         	
         	String dropdownlist = webElement.getText().trim();
         	
-        	if(dropdownlist.contentEquals("SAN MEDIA PRIVATE LIMITED & Co")) {
+        	if(dropdownlist.contentEquals(divisionName)) {
         		
         		
         		webElement.click();
         		break;
+        	}else {
+        		
+        		System.out.println("dropdown name doesn't match");
         	}
     
         	}
@@ -83,13 +89,9 @@ public class PayrunUiloadTest extends BaseTest {
         
        
 
-       /* List<WebElement> monthList = wait.until(
-                ExpectedConditions.visibilityOfAllElementsLocatedBy(
-                        By.xpath("//ul[contains(@class,'dropdown-menu') and contains(@class,'inner') and contains(@class,'show')]//li")
-                )
-        );*/
+    
 
-       driver.findElement(By.xpath("(//input[@class='form-control'])[2]")).sendKeys("August-2026");
+       driver.findElement(By.xpath("(//input[@class='form-control'])[2]")).sendKeys(month);
        driver.findElement(By.xpath("//a[contains(@id,'bs-select-4')]")).click();
        
       // driver.findElement(By.xpath("//button[text()='INITIATE PAYRUN']")).click();
@@ -103,6 +105,9 @@ public class PayrunUiloadTest extends BaseTest {
        String Firstpagetext = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[@class='atten active fs-14  fw-5']"))).getText();
        
        if (Firstpagetext.equals("Attendance")) {
+    	   
+    	   takeScreenshot("Payrun 1st page.....Test case Pass");
+
 		
     	   // select all
          //  driver.findElement(By.xpath("//input[@id='selallchk']")).click();
@@ -152,6 +157,8 @@ public class PayrunUiloadTest extends BaseTest {
             
             if (secondndpagetext.equals("Addition & Deduction")) {
     		
+            	takeScreenshot("Payrun 2nd page.....Test case Pass");
+            	
             	System.out.println("Enter into senond page of payrun");
             	
             	 actions.scrollByAmount(0, 400).perform();
@@ -168,6 +175,8 @@ public class PayrunUiloadTest extends BaseTest {
             	
             	if (initiatedjobtext.equals("Pre-Calculation Job Initiated")) {
             		
+            		takeScreenshot("Payrun 3rd page-pre-cal-job.....Test case Pass");
+            		
             		System.out.println("Initiated job was run successfully");
             		
             		//viewstatusbtn
@@ -179,6 +188,8 @@ public class PayrunUiloadTest extends BaseTest {
             		
             		if (preCalculationText.equals("Pre-Calculation Completed")) {
 						
+            			takeScreenshot("Payrun 3rd page-pre-cal-job completed.....Test case Pass");
+            			
             			System.out.println("Pre-calculation process completed....");
             			
             			// Proceed to Summary
@@ -207,6 +218,10 @@ public class PayrunUiloadTest extends BaseTest {
             			String fourthpagetext = driver.findElement(By.xpath("//li[@class='summary fs-14 fw-5 active']")).getText().trim();
             			
             			if (fourthpagetext.equals("Summary")) {
+            				
+            				Thread.sleep(2000);
+                			takeScreenshot("Payrun 4rd page.....Test case Pass");
+
 							
             				System.out.println("Enterd into summary screen....");
             				
@@ -266,8 +281,10 @@ public class PayrunUiloadTest extends BaseTest {
             				                				          				    
             				    
             				    if (payrunfinaltext.equals("Payrun Processed Successfully.")) {
-									
-            				    	System.out.println("final conformation popup is shown for payrun complete");
+            				    	
+                        			takeScreenshot("Payrun process compeleted.....Test case Pass");
+                        			
+       				    	System.out.println("final conformation popup is shown for payrun complete");
             				    	//driver.switchTo().alert().accept();
             				    	
             				    	 alert.accept();
@@ -288,17 +305,23 @@ public class PayrunUiloadTest extends BaseTest {
 								}
             				    else {
             				    	
+                        			takeScreenshot("Payrun process Failed.....Test case Failed");
+
             				    	System.out.println("Showing error in Final stage of process payrun");
             				    	
             				    }
 						}
             			else {
             				
+            				Thread.sleep(3000);
+                			takeScreenshot("Payrun 4rd page.....Test case Failed");
             				System.out.println("Showing error in 4th summary screen of the payrun process");
             			}
             			
 					}
             		else {
+            			
+            			takeScreenshot("Payrun 3rd page-pre-cal-job Failed.....Test case Failed");
             			
             			System.out.println("Showing error in pre-calculation process");
             		}
@@ -307,12 +330,16 @@ public class PayrunUiloadTest extends BaseTest {
             	
             	else {
             		
+            		takeScreenshot("Payrun 3rd page-pre-cal-job.....Test case Failed");
+            		
             		System.out.println("Showing error in Initiated job process");
             	}
             	 
     		}
             
             else {
+            	
+            	takeScreenshot("Payrun 2nd page.....Test case Failed");
             	
             	System.out.println("Showing error in senond page");
             }
@@ -321,6 +348,7 @@ public class PayrunUiloadTest extends BaseTest {
 	} // first page if condtions end's
        else {
     	   
+    	   takeScreenshot("Payrun 1st page.....Test case Failed");
        	System.out.println("Showing error in First page of the payrun process screen");
        } // first page else condtions end's
        
@@ -333,5 +361,171 @@ public class PayrunUiloadTest extends BaseTest {
     public void closeBrowser() {
     	closebrowser();
     }
-}
+}*/
 
+
+public class PayrunUiloadTest extends BaseTest {
+
+    @BeforeMethod
+    public void setupTest() {
+
+        setup();
+    }
+
+
+    @Test(dataProvider = "loginData",
+          dataProviderClass = LoginData.class)
+    public void payrunTest( String username, String password, String divisionName,String month) throws InterruptedException, AWTException, IOException {
+
+        login(username, password);
+
+        System.out.println("Login completed");
+
+        PayrunLoadPage payrun = new PayrunLoadPage(driver);
+
+
+        // Open Payrun
+  payrun.openPayrun();
+                     
+  
+     // Select Division from Excel
+
+        payrun.selectDivision(divisionName);
+       
+        // Select Month from Excel
+
+        payrun.selectMonth(month.trim());
+
+
+        // Initiate Payrun
+
+        payrun.initiatePayrun();
+
+
+        // 1st Page of payrun
+
+        if (payrun.verifyFirstPage()) {
+
+            payrun.takeScreenshot("Payrun 1st page.....Test case Pass");
+
+            payrun.selectAllEmployees();
+
+            payrun.clickNext();
+
+
+            // 2nd Page of payrun
+
+            if (payrun.verifySecondPage()) {
+
+                payrun.takeScreenshot("Payrun 2nd page.....Test case Pass");
+
+                payrun.clickNextToPre();
+
+
+                // 3rd Page - pre-calculation Job Initiated
+
+                if (payrun.verifyInitiatedJob()) {
+
+                    payrun.takeScreenshot("Payrun 3rd page-pre-cal-job.....Test case Pass");
+
+                    payrun.clickViewJobStatus();
+
+
+                    // 3rd Page - pre-cal job compeleted
+
+                    if (payrun.verifyPreCalculationCompleted()) {
+
+                        payrun.takeScreenshot("Payrun 3rd page-pre-cal-job completed.....Test case Pass");
+
+                        payrun.proceedToSummary();
+
+                        payrun.clickViewSummary();
+
+
+                        // 4th Page of page
+
+                        if (payrun.verifySummaryPage()) {
+
+                        	takeScreenshot("Payrun 4rd page.....Test case Pass");
+
+                            payrun.clickProcess();
+
+
+                            // Final popup of payrun successfull
+
+                            String alertText =payrun.getPayrunAlertText();
+
+                            System.out.println("Alert text: " + alertText);
+
+
+                            if (alertText.equals("Payrun Processed Successfully.")) {
+
+                                payrun.takeScreenshot("PayrunProcess completed...Test Case PASS");
+
+                                payrun.acceptAlert();
+
+
+                                if (payrun.verifyPayrunCompleted()) {
+
+                                    System.out.println("Payrun completed successfully......");
+
+                                } else {
+
+                                    payrun.takeScreenshot("PayrunProcess_Not completed.....Test case failed");
+
+                                    System.out.println( "Payrun completed but did not return to Payrun Process.");
+                                }
+
+                            } else {
+
+                                payrun.takeScreenshot("PayrunProcess not completed....Test case Failed");
+
+                                System.out.println( "Showing error in Final stage of process payrun");
+
+                                payrun.acceptAlert();
+                            }
+
+                        } else {
+
+                            payrun.takeScreenshot("Payrun 4rd page.....Test case Failed");
+
+                            System.out.println( "Showing error in 4th summary screen");
+                        }
+
+                    } else {
+
+                        payrun.takeScreenshot("Payrun 3rd page-pre-cal-job completed.....Test case Failed");
+                        System.out.println("Showing error in pre-calculation process");
+                    }
+
+                } else {
+
+                    payrun.takeScreenshot("Payrun 3rd page-pre-cal-job.....Test case Failed");
+
+                    System.out.println("Showing error in Initiated job process");
+                }
+
+            } else {
+
+                payrun.takeScreenshot("Payrun 2nd page.....Test case Failed");
+
+                System.out.println( "Showing error in second page");
+            }
+
+        } // 1st page if condition end's
+        
+        else {
+
+            payrun.takeScreenshot("Payrun 1st page.....Test case Failed");
+
+            System.out.println( "Showing error in First page");
+        }
+    }
+
+
+    @AfterMethod
+    public void closeBrowser() {
+
+        closebrowser();
+    }
+}
