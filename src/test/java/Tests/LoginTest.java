@@ -52,7 +52,7 @@ import TestData.LoginData;
 
 public class LoginTest extends BaseTest {
 
-    @BeforeMethod
+ /*   @BeforeMethod
     public void startBrowser() {
         setup();
     }
@@ -67,7 +67,7 @@ public class LoginTest extends BaseTest {
     @AfterMethod
     public void closeBrowser() {
     	closebrowser();
-    }
+    }*/
 }
 
 

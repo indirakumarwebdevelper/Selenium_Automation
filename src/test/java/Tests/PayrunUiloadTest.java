@@ -366,7 +366,7 @@ import TestData.LoginData;
 
 public class PayrunUiloadTest extends BaseTest {
 
-    @BeforeMethod
+  /*  @BeforeMethod
     public void setupTest() {
 
         setup();
@@ -394,7 +394,7 @@ public class PayrunUiloadTest extends BaseTest {
        
         // Select Month from Excel
 
-        payrun.selectMonth(month.trim());
+        payrun.selectMonth(month);
 
 
         // Initiate Payrun
@@ -406,6 +406,7 @@ public class PayrunUiloadTest extends BaseTest {
 
         if (payrun.verifyFirstPage()) {
 
+        	System.out.println("Enterd into 1st page of payrun..Attendance screen");
             payrun.takeScreenshot("Payrun 1st page.....Test case Pass");
 
             payrun.selectAllEmployees();
@@ -417,6 +418,7 @@ public class PayrunUiloadTest extends BaseTest {
 
             if (payrun.verifySecondPage()) {
 
+            	System.out.println("Enterd into 2nd page of payrun..Attendance and deduction screen");
                 payrun.takeScreenshot("Payrun 2nd page.....Test case Pass");
 
                 payrun.clickNextToPre();
@@ -426,6 +428,7 @@ public class PayrunUiloadTest extends BaseTest {
 
                 if (payrun.verifyInitiatedJob()) {
 
+                	System.out.println("Enter into pre-calculation initaited screen");
                     payrun.takeScreenshot("Payrun 3rd page-pre-cal-job.....Test case Pass");
 
                     payrun.clickViewJobStatus();
@@ -435,6 +438,7 @@ public class PayrunUiloadTest extends BaseTest {
 
                     if (payrun.verifyPreCalculationCompleted()) {
 
+                    	System.out.println("Enter into pre-calculation initaited compelted screen");
                         payrun.takeScreenshot("Payrun 3rd page-pre-cal-job completed.....Test case Pass");
 
                         payrun.proceedToSummary();
@@ -446,44 +450,62 @@ public class PayrunUiloadTest extends BaseTest {
 
                         if (payrun.verifySummaryPage()) {
 
-                        	takeScreenshot("Payrun 4rd page.....Test case Pass");
+                        	System.out.println("Enter into payrun 4rd screen....summary");
+                        	
+                        	payrun.takeScreenshot("Payrun 4rd page.....Test case Pass");
 
-                            payrun.clickProcess();
+                        	payrun.clickProcess();
 
+                        	// First confirmation popup
+                        	String confirmationText = payrun.getPayrunConfirmationAlertText();
 
-                            // Final popup of payrun successfull
+                        	if (confirmationText.equals("Do You Want To Process Payrun?")) {
 
-                            String alertText =payrun.getPayrunAlertText();
+                        	    System.out.println("Payrun confirmation accepted.");
 
-                            System.out.println("Alert text: " + alertText);
+                        	    // Wait for final processing alert
+                        	    String alertText = payrun.getPayrunAlertText();
 
+                        	    System.out.println("Final Alert text: " + alertText);
 
-                            if (alertText.equals("Payrun Processed Successfully.")) {
+                        	    if (alertText.equals("Payrun Processed Successfully.")) {
 
-                                payrun.takeScreenshot("PayrunProcess completed...Test Case PASS");
+                        	        // Accept final success alert FIRST
+                        	        payrun.acceptAlert();
 
-                                payrun.acceptAlert();
+                        	        // Take screenshot after alert is closed
+                        	        payrun.takeScreenshot("PayrunProcess completed...Test Case PASS");
 
+                        	        if (payrun.verifyPayrunCompleted()) {
 
-                                if (payrun.verifyPayrunCompleted()) {
+                        	            System.out.println(
+                        	                    "Payrun completed successfully......");
 
-                                    System.out.println("Payrun completed successfully......");
+                        	        } else {
 
-                                } else {
+                        	            payrun.takeScreenshot("PayrunProcess_Not completed.....Test case failed");
 
-                                    payrun.takeScreenshot("PayrunProcess_Not completed.....Test case failed");
+                        	            System.out.println(
+                        	                    "Payrun completed but did not return to Payrun Process.");
+                        	        }
 
-                                    System.out.println( "Payrun completed but did not return to Payrun Process.");
-                                }
+                        	    } else {
 
-                            } else {
+                        	        // Accept error alert before taking screenshot
+                        	        payrun.acceptAlert();
 
-                                payrun.takeScreenshot("PayrunProcess not completed....Test case Failed");
+                        	        payrun.takeScreenshot("PayrunProcess not completed....Test case Failed");
 
-                                System.out.println( "Showing error in Final stage of process payrun");
+                        	        System.out.println(
+                        	                "Showing error in Final stage of process payrun");
+                        	    }
 
-                                payrun.acceptAlert();
-                            }
+                        	} else {
+
+                        	    System.out.println(
+                        	            "Unexpected confirmation alert: " + confirmationText);
+                        	}
+
 
                         } else {
 
@@ -527,5 +549,534 @@ public class PayrunUiloadTest extends BaseTest {
     public void closeBrowser() {
 
         closebrowser();
+    }*/
+	
+	
+/*	@Test(
+	        dataProvider = "loginData",
+	        dataProviderClass = LoginData.class
+	)
+	public void payrunTest(
+	        int credentialId,
+	        String username,
+	        String password,
+	        String divisionName,
+	        String month,
+	        String browser
+	) throws InterruptedException, AWTException, IOException {
+
+	    setup(browser);
+
+	    String screenshotPrefix =
+	            "Credential_" + credentialId
+	            + "_" + browser
+	            + "_" + username;
+
+	    StringBuilder log = new StringBuilder();
+
+	    log.append("\n");
+	    log.append("==================================================\n");
+	    log.append("STARTING CREDENTIAL ").append(credentialId).append("\n");
+	    log.append("Browser  : ").append(browser).append("\n");
+	    log.append("Username : ").append(username).append("\n");
+	    log.append("Division : ").append(divisionName).append("\n");
+	    log.append("Month    : ").append(month).append("\n");
+	    log.append("==================================================\n\n");
+
+
+        // Login
+        login(username, password);
+
+       // System.out.println("Login completed");
+        log.append("Login completed\n");
+
+        PayrunLoadPage payrun =
+                new PayrunLoadPage(getDriver());
+
+        // Open Payrun
+        payrun.openPayrun();
+
+        // Select Division from Excel
+        payrun.selectDivision(divisionName);
+        
+       /* System.out.println(
+                "Credential " + credentialId
+                + " | Browser: " + browser
+                + " | Division selected: " + divisionName
+        );
+        
+        log.append("Division selected: ")
+        .append(divisionName)
+        .append("\n");
+
+        // Select Month from Excel
+        payrun.selectMonth(month);
+
+       /* System.out.println(
+                "Credential " + credentialId
+                + " | Browser: " + browser
+                + " | Month selected: " + month
+        );
+        
+        log.append("Month selected: ")
+        .append(month)
+        .append("\n");
+        
+        // Initiate Payrun
+        payrun.initiatePayrun();
+
+        // 1st Page of Payrun
+        if (payrun.verifyFirstPage()) {
+
+        	payrun.takeScreenshot(
+        	        screenshotPrefix + "_Payrun_1st_page_PASS"
+        	);
+
+            payrun.selectAllEmployees();
+
+            payrun.clickNext();
+
+            // 2nd Page of Payrun
+            if (payrun.verifySecondPage()) {
+
+            	payrun.takeScreenshot(
+            	        screenshotPrefix + "_Payrun_2nd_page_PASS"
+            	);
+
+                payrun.clickNextToPre();
+
+                // 3rd Page - Pre-calculation Job Initiated
+                if (payrun.verifyInitiatedJob()) {
+
+                	payrun.takeScreenshot(
+                	        screenshotPrefix + "_Payrun_3rd_page_pre_cal_job_PASS"
+                	);
+
+                    payrun.clickViewJobStatus();
+
+                    // 3rd Page - Pre-calculation Job Completed
+                    if (payrun.verifyPreCalculationCompleted()) {
+
+                    	payrun.takeScreenshot(
+                    	        screenshotPrefix + "_Payrun_3rd_page_pre_cal_job_completed_PASS"
+                    	);
+
+                        payrun.proceedToSummary();
+
+                        payrun.clickViewSummary();
+
+                        // 4th Page - Summary
+                        if (payrun.verifySummaryPage()) {
+
+                        	payrun.takeScreenshot(
+                        	        screenshotPrefix + "_Payrun_4th_page_PASS"
+                        	);
+
+                            payrun.clickProcess();
+
+                         // First confirmation popup
+                         String confirmationText =
+                                 payrun.getPayrunConfirmationAlertText();
+
+                        /* System.out.println(
+                        	        "Credential " + credentialId
+                        	        + " | Browser: " + browser
+                        	        + " | Confirmation Alert: " + confirmationText
+                        	);
+                         log.append("Confirmation Alert: ")
+                         .append(confirmationText)
+                         .append("\n");
+
+                         if (confirmationText.equals(
+                                 "Do You Want To Process Payrun?"
+                         )) {
+
+                        	/* System.out.println(
+                        		        "Credential " + credentialId
+                        		        + " | Browser: " + browser
+                        		        + " | Payrun confirmation accepted."
+                        		);
+                        	 
+                        	 log.append("Payrun confirmation accepted.\n");
+
+                             // Accept first confirmation alert
+                             payrun.acceptAlert();
+
+                             // Wait for final processing alert
+                             String alertText =
+                                     payrun.getPayrunAlertText();
+
+                         /*    System.out.println(
+                            	        "Credential " + credentialId
+                            	        + " | Browser: " + browser
+                            	        + " | Final Alert text: " + alertText
+                            	);
+                             
+                             log.append("Final Alert: ")
+                             .append(alertText)
+                             .append("\n");
+
+                             if (alertText.equals(
+                                     "Payrun Processed Successfully."
+                             )) {
+
+                                 // IMPORTANT:
+                                 // Accept alert before screenshot
+                                 payrun.acceptAlert();
+
+                                 payrun.takeScreenshot(
+                                	        screenshotPrefix + "_Payrun_Process_COMPLETED_PASS"
+                                	);                                
+
+                                 if (payrun.verifyPayrunCompleted()) {
+
+                                	/* System.out.println(
+                                		        "Credential " + credentialId
+                                		        + " | Browser: " + browser
+                                		        + " | Payrun completed successfully......"
+                                		);
+                                	 log.append("Payrun completed successfully.\n");
+
+                                 } else {
+
+                                     payrun.takeScreenshot(
+                                             "PayrunProcess_Not completed.....Test case failed"
+                                     );
+
+                                     System.out.println(
+                                             "Payrun completed but did not return to Payrun Process."
+                                     );
+                                 }
+
+                             } else {
+
+                                 // Close final error alert first
+                                 payrun.acceptAlert();
+
+                                 payrun.takeScreenshot(
+                                         "PayrunProcess not completed....Test case Failed"
+                                 );
+
+                                 System.out.println(
+                                         "Showing error in Final stage of process payrun"
+                                 );
+                             }
+
+                         } else {
+
+                             System.out.println(
+                                     "Unexpected confirmation alert: "
+                                             + confirmationText
+                             );
+
+                             payrun.acceptAlert();
+                         }
+
+                        } else {
+
+                            payrun.takeScreenshot(
+                            		screenshotPrefix +   "_Payrun 4rd page.....Test case Failed"
+                            );
+
+                            System.out.println(
+                                    "Showing error in 4th summary screen"
+                            );
+                        }
+
+                    } else {
+
+                        payrun.takeScreenshot(
+                        		screenshotPrefix +  "_Payrun 3rd page-pre-cal-job completed.....Test case Failed"
+                        );
+
+                        System.out.println(
+                                "Showing error in pre-calculation process"
+                        );
+                    }
+
+                } else {
+
+                    payrun.takeScreenshot(
+                    		screenshotPrefix +  "_Payrun 3rd page-pre-cal-job.....Test case Failed"
+                    );
+
+                    System.out.println(
+                            "Showing error in Initiated job process"
+                    );
+                }
+
+            } else {
+
+                payrun.takeScreenshot(
+                		screenshotPrefix +  "_Payrun 2nd page.....Test case Failed"
+                );
+
+                System.out.println(
+                        "Showing error in second page"
+                );
+            }
+
+        } else {
+
+            payrun.takeScreenshot(
+            		screenshotPrefix +  "_Payrun 1st page.....Test case Failed"
+            );
+
+            System.out.println(
+                    "Showing error in First page"
+            );
+        }
+    }*/
+
+	@Test(
+	        dataProvider = "loginData",
+	        dataProviderClass = LoginData.class
+	)
+	public void payrunTest(
+	        int credentialId,
+	        String username,
+	        String password,
+	        String divisionName,
+	        String month,
+	        String browser
+	) throws InterruptedException, AWTException, IOException {
+
+	    setup(browser);
+
+	    StringBuilder log = new StringBuilder();
+
+	    // ==============================
+	    // START LOG
+	    // ==============================
+
+	    log.append("\n");
+	    log.append("==================================================\n");
+	    log.append("STARTING CREDENTIAL ").append(credentialId).append("\n");
+	    log.append("Browser  : ").append(browser).append("\n");
+	    log.append("Username : ").append(username).append("\n");
+	    log.append("Division : ").append(divisionName).append("\n");
+	    log.append("Month    : ").append(month).append("\n");
+	    log.append("==================================================\n");
+
+	    // Login
+	    login(username, password);
+
+	    log.append("Login completed\n");
+
+	    PayrunLoadPage payrun =
+	            new PayrunLoadPage(getDriver());
+
+	    // Open Payrun
+	    payrun.openPayrun();
+
+	    // Division
+	    payrun.selectDivision(divisionName);
+
+	    log.append("Division selected: ")
+	       .append(divisionName)
+	       .append("\n");
+
+	    // Month
+	    payrun.selectMonth(month);
+
+	    log.append("Month selected: ")
+	       .append(month)
+	       .append("\n");
+
+	    // Initiate Payrun
+	    payrun.initiatePayrun();
+
+	    // 1st Page
+	    if (payrun.verifyFirstPage()) {
+
+	        log.append("1st Page: Attendance - PASS\n");
+
+	        payrun.selectAllEmployees();
+	        payrun.clickNext();
+
+	        // 2nd Page
+	        if (payrun.verifySecondPage()) {
+
+	            log.append("2nd Page: Addition & Deduction - PASS\n");
+
+	            payrun.clickNextToPre();
+
+	            // 3rd Page
+	            if (payrun.verifyInitiatedJob()) {
+
+	                log.append(
+	                    "3rd Page: Pre-Calculation Job Initiated - PASS\n"
+	                );
+
+	                payrun.clickViewJobStatus();
+
+	                if (payrun.verifyPreCalculationCompleted()) {
+
+	                    log.append(
+	                        "Pre-Calculation Completed - PASS\n"
+	                    );
+
+	                    payrun.proceedToSummary();
+	                    payrun.clickViewSummary();
+
+	                    // 4th Page
+	                    if (payrun.verifySummaryPage()) {
+
+	                        log.append("4th Page: Summary - PASS\n");
+
+	                        payrun.clickProcess();
+
+	                        // First confirmation
+	                        String confirmationText =
+	                                payrun.getPayrunConfirmationAlertText();
+
+	                        log.append("Confirmation Alert: ")
+	                           .append(confirmationText)
+	                           .append("\n");
+
+	                        if (confirmationText.equals(
+	                                "Do You Want To Process Payrun?"
+	                        )) {
+
+	                            log.append(
+	                                "Payrun confirmation accepted.\n"
+	                            );
+
+	                            payrun.acceptAlert();
+
+	                            // Final alert
+	                            String alertText =
+	                                    payrun.getPayrunAlertText();
+
+	                            log.append("Final Alert: ")
+	                               .append(alertText)
+	                               .append("\n");
+
+	                            if (alertText.equals(
+	                                    "Payrun Processed Successfully."
+	                            )) {
+
+	                                payrun.acceptAlert();
+
+	                                log.append(
+	                                    "Payrun Processed Successfully - PASS\n"
+	                                );
+
+	                                if (payrun.verifyPayrunCompleted()) {
+
+	                                    log.append(
+	                                        "Payrun completed successfully.\n"
+	                                    );
+
+	                                } else {
+
+	                                    log.append(
+	                                        "Payrun completed but did not return "
+	                                        + "to Payrun Process - FAIL\n"
+	                                    );
+	                                }
+
+	                            } else {
+
+	                                log.append(
+	                                    "Final Payrun Processing - FAIL\n"
+	                                );
+
+	                                payrun.acceptAlert();
+	                            }
+
+	                        } else {
+
+	                            log.append(
+	                                "Unexpected confirmation alert - FAIL\n"
+	                            );
+
+	                            payrun.acceptAlert();
+	                        }
+
+	                    } else {
+
+	                        log.append(
+	                            "4th Page: Summary - FAIL\n"
+	                        );
+	                    }
+
+	                } else {
+
+	                    log.append(
+	                        "Pre-Calculation Completed - FAIL\n"
+	                    );
+	                }
+
+	            } else {
+
+	                log.append(
+	                    "Pre-Calculation Job Initiated - FAIL\n"
+	                );
+	            }
+
+	        } else {
+
+	            log.append(
+	                "2nd Page: Addition & Deduction - FAIL\n"
+	            );
+	        }
+
+	    } else {
+
+	        log.append(
+	            "1st Page: Attendance - FAIL\n"
+	        );
+	    }
+
+
+	    // ==============================
+	    // END LOG
+	    // ==============================
+
+	    log.append("\n");
+	    log.append("==================================================\n");
+	    log.append("COMPLETED CREDENTIAL ")
+	       .append(credentialId)
+	       .append("\n");
+	    log.append("Browser: ")
+	       .append(browser)
+	       .append("\n");
+	    log.append("==================================================\n");
+
+	    System.out.println(log.toString());
+	}
+	
+
+	
+    @AfterMethod
+    public void closeBrowser() {
+
+        closebrowser();
     }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
